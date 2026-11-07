@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Storm Royale</title>
+  </head>
+  <body>
+    <div id="hud" class="hidden">
+      <div id="topbar">
+        <div class="stat">
+          <span class="label">HP</span>
+          <div class="bar"><i id="hp-fill"></i></div>
+          <span id="hp-text">100</span>
+        </div>
+        <div class="stat">
+          <span class="label">SHIELD</span>
+          <div class="bar shield"><i id="shield-fill"></i></div>
+          <span id="shield-text">0</span>
+        </div>
+        <div class="stat">
+          <span class="label">WOOD</span>
+          <span id="wood-text">150</span>
+        </div>
+        <div class="stat">
+          <span class="label">SP</span>
+          <span id="sp-text">2</span>
+        </div>
+        <div class="stat">
+          <span class="label">LV</span>
+          <span id="level-text">1</span>
+          <span class="hint">/100</span>
+        </div>
+        <div class="stat">
+          <span class="label">WINS</span>
+          <span id="wins-text">0</span>
+        </div>
+        <div class="stat center">
+          <span id="alive-text">12 ALIVE</span>
+          <span id="storm-text">STORM IN 20s</span>
+          <span id="kills-text">0 ELIMS</span>
+        </div>
+      </div>
+      <div id="boss-hud">
+        <span id="boss-name">THE STAG</span>
+        <div class="bar boss"><i id="boss-fill"></i></div>
+        <span id="boss-hp">9000</span>
+      </div>
+      <div id="banner"></div>
+      <div id="center-countdown" class="hidden">
+        <div id="countdown-label">LAVA IN</div>
+        <div id="countdown-num">12</div>
+      </div>
+      <div id="killfeed"></div>
+      <div id="crosshair"></div>
+      <div id="weapon-bar">
+        <div class="wslot" data-gun="pistol"><kbd>1</kbd> <span id="w-pistol">Pistol</span></div>
+        <div class="wslot" data-gun="rifle"><kbd>2</kbd> <span id="w-rifle">Rifle</span></div>
+        <div class="wslot" data-gun="shotgun"><kbd>3</kbd> <span id="w-shotgun">Shotgun</span></div>
+        <div class="wslot" data-gun="sword"><kbd>4</kbd> Sword</div>
+        <div class="wslot axe"><kbd>E</kbd> Axe</div>
+      </div>
+      <div id="build-bar">
+        <div class="slot active" data-mode="wall"><kbd>Q</kbd> Wall</div>
+        <div class="slot" data-mode="floor"><kbd>F</kbd> Floor</div>
+        <div class="slot" data-mode="ramp"><kbd>C</kbd> Ramp</div>
+        <div class="slot shoot"><kbd>G</kbd>/<kbd>LMB</kbd> Fire · <kbd>R</kbd> Loot · <kbd>RMB</kbd> Build</div>
+      </div>
+      <div id="ammo-read"><span id="weapon-name">Pistol</span> · <span id="ammo-text">∞</span></div>
+      <canvas id="minimap" width="160" height="160"></canvas>
+    </div>
+    <div id="overlay" class="show">
+      <div class="panel" id="panel-home">
+        <p class="eyebrow">BOSS RAID</p>
+        <h1>STORM ROYALE</h1>
+        <p class="blurb" id="home-blurb">
+          12 fighters. One giant stag. Team up, stay off the lava, and bring it down.
+          Original game — not Fortnite.
+        </p>
+        <p class="career" id="career-line"></p>
+        <div class="menu-actions">
+          <button id="start-btn" type="button">Play</button>
+          <button id="skills-menu-btn" class="ghost" type="button">Skill tree</button>
+          <button id="howto-btn" class="ghost" type="button">How to play</button>
+          <button id="settings-btn" class="ghost" type="button">Settings</button>
+        </div>
+      </div>
+      <div class="panel hidden" id="panel-pause">
+        <p class="eyebrow">MATCH PAUSED</p>
+        <h1>PAUSED</h1>
+        <p class="blurb">Press H or Resume to continue. T opens the skill tree.</p>
+        <div class="menu-actions">
+          <button id="resume-btn" type="button">Resume</button>
+          <button id="pause-skills-btn" class="ghost" type="button">Skill tree</button>
+        </div>
+      </div>
+      <div class="panel hidden" id="panel-results">
+        <p class="eyebrow" id="results-eyebrow">MATCH OVER</p>
+        <h1 id="results-title">ELIMINATED</h1>
+        <p class="blurb" id="results-blurb"></p>
+        <ul id="results-stats"></ul>
+        <div class="menu-actions">
+          <button id="again-btn" type="button">Play again</button>
+          <button id="menu-btn" class="ghost" type="button">Main menu</button>
+        </div>
+      </div>
+      <div class="panel hidden" id="panel-howto">
+        <p class="eyebrow">MANUAL</p>
+        <h1>How to play</h1>
+        <ul>
+          <li><kbd>WASD</kbd> / arrows move · <kbd>Space</kbd> jump · <kbd>Space</kbd> again in air to double jump · <kbd>Y</kbd> in air to stomp · mouse look</li>
+          <li><kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> guns · <kbd>4</kbd> sword · <kbd>G</kbd> or left click attack</li>
+          <li><kbd>E</kbd> chop trees · <kbd>R</kbd> open chests / grab loot</li>
+          <li><kbd>Q</kbd> <kbd>F</kbd> <kbd>C</kbd> build · right click place</li>
+          <li>After 12s the floor is lava — jump onto buildings or wood floors. The purple ring stays put; stepping outside it is instant death.</li>
+          <li>Team up with the other fighters. Shoot the giant stag in the center. Friendly fire is off. The match keeps going after the Stag falls.</li>
+          <li><kbd>H</kbd> pause · <kbd>T</kbd> skill tree</li>
+        </ul>
+        <button id="howto-back" class="ghost" type="button">Back</button>
+      </div>
+      <div class="panel hidden" id="panel-settings">
+        <p class="eyebrow">OPTIONS</p>
+        <h1>Settings</h1>
+        <label class="setting">Look sensitivity
+          <input id="sens-input" type="range" min="4" max="40" value="22" />
+        </label>
+        <label class="setting">
+          <input id="sound-input" type="checkbox" checked /> Sound
+        </label>
+        <button id="reset-progress" class="ghost danger" type="button">Reset career / skills</button>
+        <button id="settings-back" class="ghost" type="button">Back</button>
+      </div>
+    </div>
+    <div id="skill-tree">
+      <div class="skill-panel">
+        <div class="skill-head">
+          <div>
+            <p class="eyebrow">CAREER PROGRESSION</p>
+            <h2>Skill tree</h2>
+          </div>
+          <div class="skill-head-meta">
+            <span id="skill-points">2 points</span>
+            <button id="skill-close" type="button">Close</button>
+          </div>
+        </div>
+        <p class="skill-help" id="skill-help">Levels 1–100. Chop, eliminate, and win to grow.</p>
+        <div id="skill-branches" class="branches"></div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
